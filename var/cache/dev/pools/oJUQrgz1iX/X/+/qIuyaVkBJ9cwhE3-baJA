@@ -1,3 +1,0 @@
-<?php //Role
-
-return [PHP_INT_MAX, []];

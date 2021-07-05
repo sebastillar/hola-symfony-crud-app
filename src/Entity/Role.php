@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Role;
+namespace App\Entity;
 
-use Elao\Enum\ReadableEnum;
+use Elao\Enum\Enum;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -15,7 +15,7 @@ use Elao\Enum\ReadableEnum;
  *
  * @author sebastianvillar
  */
-final class Role extends ReadableEnum
+final class Role extends Enum
 {
     public const ADMIN = 'ADMIN';
     public const PAGE_1 = 'PAGE_1';
@@ -27,15 +27,6 @@ final class Role extends ReadableEnum
             self::ADMIN,
             self::PAGE_1,
             self::PAGE_2,
-        ];
-    }
-
-    public static function readables(): array
-    {
-        return [
-            self::ADMIN => 'Role ADMIN',
-            self::PAGE_1 => 'Role ONE',
-            self::PAGE_2 => 'Role TWO',
         ];
     }
 }
