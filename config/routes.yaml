@@ -1,3 +1,21 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+index:
+    path: /
+    controller: App\Controller\WebUserController::index
+
+login:
+    path: /login
+    controller: App\Controller\WebUserController::login
+    
+logout:
+    path: /logout
+    
+user:
+    path: /page/{number}
+    controller: App\Controller\WebUserController::renderUserPage
+    methods: [GET]
+    requirements:
+        number: '[1-2]'
+        
+error:
+    path: /error    
+    controller: App\Controller\WebUserController::error    

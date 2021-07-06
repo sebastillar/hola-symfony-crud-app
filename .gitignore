@@ -1,8 +1,8 @@
 # Email spool folder
 /app/spool/*
 
-# Logs (Symfony4)
-/var/log/*
+# Var (Symfony4)
+/var/*
 !var/log/.gitkeep
 
 # Parameters

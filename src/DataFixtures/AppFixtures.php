@@ -18,15 +18,37 @@ class AppFixtures extends Fixture
     
     public function load(ObjectManager $manager)
     {
-        $user = new User();
-        $user->setRole(Role::get('ADMIN'));
-        $user->setName("Admin");
-        $user->setUsername("admin");
-        $user->setPassword($this->passwordEncoder->encodePassword(
-            $user,
+        $roleAdmin=Role::get('ADMIN');
+        $roleOne=Role::get('PAGE_1');
+        $roleTwo=Role::get('PAGE_2');
+        
+        $userAdmin = new User();
+        $userAdmin->setRole($roleAdmin);
+        $userAdmin->setName("Admin");
+        $userAdmin->setUsername("admin");
+        $userAdmin->setPassword($this->passwordEncoder->encodePassword(
+            $userAdmin,
             "adminpassword"
         ));
-        $manager->persist($user);
+        
+        $manager->persist($userAdmin);
+        
+        for ($i = 0; $i < 20; $i++) 
+        {
+            $user = new User();
+            if($i%2 == 0)
+                $user->setRole($roleTwo);
+            else
+                $user->setRole($roleOne);                
+            $user->setName("Name".$i);
+            $user->setUsername("user".$i);
+            $user->setPassword($this->passwordEncoder->encodePassword(
+                $user,
+                "password".$i
+            ));
+            $manager->persist($user);
+        }
+        
         $manager->flush();
     }
    

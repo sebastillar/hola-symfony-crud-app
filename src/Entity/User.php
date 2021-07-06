@@ -38,7 +38,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="role")
      */
-    private Role $role;
+    private $role;
 
     public function getId(): ?int
     {
@@ -105,4 +105,9 @@ class User implements UserInterface
     
     public function eraseCredentials()
     {}
+    
+    public function __toString()
+    {
+        return (string) $this->getName();
+    }
 }

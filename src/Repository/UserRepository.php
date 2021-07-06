@@ -2,22 +2,36 @@
 
 namespace App\Repository;
 
-use App\Entity\User;
+use App\Entity\User as User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
+
 
 /**
- * @method User|null find($id, $lockMode = null, $lockVersion = null)
- * @method User|null findOneBy(array $criteria, array $orderBy = null)
- * @method User[]    findAll()
- * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * Class UserRepository
+ * @package App\Repository
  */
 class UserRepository extends ServiceEntityRepository
-{
+{   
+    
+    /**
+     * UserRepository constructor.
+     * @param EntityManagerInterface $entityManager
+     */
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, User::class);        
+       
+    } 
+    
+    /*
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, User::class);
-    }
+    } 
+     * 
+     */   
 
     // /**
     //  * @return User[] Returns an array of User objects
@@ -47,4 +61,41 @@ class UserRepository extends ServiceEntityRepository
         ;
     }
     */
+    
+    /**
+     * @param string $username
+     * @return User
+     */
+    public function findByUsername(string $username): ?User
+    {
+        return $this->findOneBy(["username"=>$username]);
+    }   
+    
+    /**
+     * @return array
+     */
+    public function findAll(): array
+    {
+        return $this->findAll();
+    }    
+    
+    /**
+     * @param User $user
+     */
+    public function save(User $user, EntityManagerInterface $manager): void
+    {
+        $manager->persist($user);
+        $manager->flush();
+    } 
+    
+    /**
+     * @param User $user
+     */
+    public function delete(User $user, EntityManagerInterface $manager): void
+    {
+        $manager->remove($user);
+        $manager->flush();
+    }    
 }
+
+
