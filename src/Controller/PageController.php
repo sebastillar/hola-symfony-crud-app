@@ -29,10 +29,13 @@ class PageController extends AbstractController
         $role = $this->getUser()->getRole();
 
         if (
-                $role === Role::get(Role::PAGE_1) && $num_page == 2 || 
-                $role === Role::get(Role::PAGE_2) && $num_page == 1
+            $role === Role::get(Role::PAGE_1) && $num_page == 2 || 
+            $role === Role::get(Role::PAGE_2) && $num_page == 1
         ) {
-            return $this->handler->handle($request, $this->exception);
+            $response = $this->handler->handle($request, $this->exception);
+            return $this->render('error/error.html.twig', [
+                'response' => $response
+            ]);            
         }
 
         return $this->render('page/index.html.twig', [
