@@ -1,13 +1,20 @@
 login:
-    path: /
+    path: /login
     controller: App\Controller\SecurityController::login
     
 app_logout:
     path: /logout
-  
+    controller: App\Controller\SecurityController::logout
+    
 app_homepage:
     path: /page/{num_page}
     controller: App\Controller\PageController::index
     requirements:
         num_page: '[1-2]'
-    
+        
+doc_shortcut:
+    path: /
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
+    defaults:
+        route: 'login'
+        permanent: true

@@ -2,15 +2,22 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Service\UserService;
 use App\Entity\User;
-use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-    
-class RestUserController extends AbstractController
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use App\Form\UserType;
+use FOS\RestBundle\Controller\Annotations\RequestParam;
+
+/***
+ * RestUserController.
+ * @Route("/api/v1",name="api_")
+ */
+class RestUserController extends AbstractFOSRestController
 {
     /**
      * @var UserService
@@ -26,50 +33,63 @@ class RestUserController extends AbstractController
         $this->userService = $userService;
     }
     
+    
+
+    
     /**
      * Creates an User resource
+     * @Rest\Post("/user")
      * @param Request $request
      * @return View
      * @IsGranted("ADMIN")
      */
     public function postUser(Request $request): View
-    {
+    {        
         $user = $this->userService->addUser(
             $request->get('name'), 
             $request->get('username'),
             $request->get('role'),
             $request->get('password')                
         );
-
-        // In case our POST was a success we need to return a 201 HTTP CREATED response with the created object
-        return View::create($user, Response::HTTP_CREATED);
+        
+        $form = $this->createForm(UserType::class, $user);
+        $data = json_decode($request->getContent(), true);
+        $form->submit($data);
+        if ($form->isSubmitted() && $form->isValid()) {
+          $em = $this->getDoctrine()->getManager();
+          $em->persist($user);
+          $em->flush();
+          return $this->handleView($this->view(['status' => 'ok'], Response::HTTP_CREATED));
+        }
+        return $this->handleView($this->view($form->getErrors()));
     }    
 
     /**
      * Retrieves an User resource
+     * @Rest\Get("/v1/user/{username}")
      * @param string $userName
      * @return View
      */
-    /*
-    public function getUser(string $userName): View
+
+    public function getUserAction(string $userName): View
     {
         $user = $this->userService->getUser($userName);
 
-
-        // In case our GET was a success we need to return a 200 HTTP OK response with the request object
-        return View::create($user, Response::HTTP_OK);
+        return $this->handleView($this->view($user));
     }   
-    */
+    
     /**
-     * Retrieves a collection of User resource
-     * @return View
+     * Lists all Users.
+     * @Rest\Get("/v1/users")
+     *
+     * @return Response
      */
-    public function getUsers(): View
+    public function getUsersAction()
     {
         $users = $this->userService->getAllUsers();
 
-        // In case our GET was a success we need to return a 200 HTTP OK response with the collection of user object
-        return View::create($users, Response::HTTP_OK);
+        return $this->handleView($this->view($users));
+
     }
     
     /**
@@ -109,3 +129,8 @@ class RestUserController extends AbstractController
     }    
 
 }
+
+
+
+
+

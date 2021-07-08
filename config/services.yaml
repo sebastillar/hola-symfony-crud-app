@@ -42,3 +42,22 @@ services:
     
     Symfony\Component\Security\Core\Exception\AccessDeniedException:
         public: true
+        
+    Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener:        
+        public: true
+
+    Sensio\Bundle\FrameworkExtraBundle\EventListener\ParamConverterListener:
+        public: true
+
+    Sensio\Bundle\FrameworkExtraBundle\Templating\TemplateGuesser:
+        public: true
+
+    Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterManager:
+        public: true
+        
+    sensio_framework_extra.view.listener:
+        alias: 'Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener'
+    sensio_framework_extra.converter.listener: 
+        alias: 'Sensio\Bundle\FrameworkExtraBundle\EventListener\ParamConverterListener'
+    sensio_framework_extra.view.guesser:
+        alias: 'Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener'
