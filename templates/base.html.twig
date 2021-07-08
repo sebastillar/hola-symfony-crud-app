@@ -11,26 +11,44 @@
         {% endblock %}
 
         {% block javascripts %}
+
             {#{{ encore_entry_script_tags('app') }}#}
         {% endblock %}
     </head>
     <body class="bg-body">
         {% block header %}
-            <div class="container" id="header">
-                <h1> HOLA.com - SymfonyApp ✅</h1>   
-                <ul id="menu">
-                    
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+              <div class="container-fluid">
+                <a class="navbar-brand" href="#">Hola.com</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                  <ul class="navbar-nav">
+                    {% if app.request.get('_route') == 'login' %}  
+
+                        <li class="nav-item">
+                          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Home</a>
+                        </li>
+
+                    {% endif %}                    
                     {% if app.request.get('_route') != 'login' %}  
                         {% if app.user %}
-                            <li><a href="{{ path('app_logout') }}">Logout</a></li>
+                            <li class="nav-item">
+                              <a href="{{ path('app_logout') }}" class="nav-link">Log out</a>
+                            </li>                            
                         {% else %}
-                                <li><a href="{{ path('login') }}">Login</a></li>                    
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('login') }}">Login</a>
+                            </li>                    
                         {% endif %}
                     {% endif %}
-                </ul>
-            </div>
+                  </ul>
+                </div>
+              </div>
+            </nav>                                            
         {% endblock %}        
         {% block body %}{% endblock %}
-        <script src="{{ asset('build/js/app.js')}}"></script>
+            <script src="{{ asset('build/js/app.js')}}"></script>
     </body>
 </html>

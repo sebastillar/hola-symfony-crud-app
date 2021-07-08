@@ -22,6 +22,11 @@ class AccessDeniedHandler implements AccessDeniedHandlerInterface
 {
     public function handle(Request $request, AccessDeniedException $accessDeniedException): ?Response
     {
-        return new Response('You are not allowed to see this amazing page.', 403);
+        $request = null;
+        $accessDeniedException = null;
+        return new Response(
+                'You are not allowed to see this amazing page.',
+                403
+        );
     }
 }

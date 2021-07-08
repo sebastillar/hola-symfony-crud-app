@@ -33,9 +33,6 @@ class RestUserController extends AbstractFOSRestController
         $this->userService = $userService;
     }
     
-    
-
-    
     /**
      * Creates an User resource
      * @Rest\Post("/user")
@@ -71,7 +68,7 @@ class RestUserController extends AbstractFOSRestController
      * @return View
      */
 
-    public function getUserAction(string $userName): View
+    public function getUserByUsername(string $userName): View
     {
         $user = $this->userService->getUser($userName);
 
@@ -84,7 +81,7 @@ class RestUserController extends AbstractFOSRestController
      *
      * @return Response
      */
-    public function getUsersAction()
+    public function getUsers()
     {
         $users = $this->userService->getAllUsers();
 
@@ -103,7 +100,7 @@ class RestUserController extends AbstractFOSRestController
     {
         $user = $this->userService->updateUser($userName, 
             $request->get('name'), 
-            $request->get($username),
+            $request->get($userName),
             $request->get('role'),
             $request->get('password'),
         );

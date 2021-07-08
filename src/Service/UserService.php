@@ -2,30 +2,34 @@
 
 namespace App\Service;
 
+use App\Entity\Role as Role;
 use App\Entity\User as User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityNotFoundException;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * Class UserService
  * @package App\Service
  */
-final class UserService
+class UserService
 {
 
     /**
      * @var UserRepository
      */
     private $userRepository;
-
+    private $passwordEncoder;
     /**
      * UserService constructor.
      * @param UserRepository $userRepository
      */
-    public function __construct(UserRepository $userRepository){
+    public function __construct(UserRepository $userRepository, UserPasswordEncoderInterface $encoder){
         $this->userRepository = $userRepository;
+        $this->passwordEncoder = $encoder;
     }
 
+    
     /**
      * @param string $username
      * @return User
@@ -33,7 +37,7 @@ final class UserService
      */
     public function getUser(string $username): User
     {
-        $user = $this->userRepository->findByUsername($username);
+        $user = $this->userRepository->findOneByUsername($username);
         if (!$user) {
             throw new EntityNotFoundException('User with username '.$username.' does not exist!');
         }
@@ -55,19 +59,32 @@ final class UserService
      * @param string $role 
      * @return User
      */
-    public function addUser(string $name, string $username, string $password, string $role): User
+    public function addUser($options)
     {
-        $user = new User();
-        $user->setRole(Role::get($role));
-        $user->setName($name);
-        $user->setUsername($username);
+        if (
+            !array_key_exists("role", $options) ||
+            !array_key_exists("name", $options) ||
+            !array_key_exists("username", $options) ||
+            !array_key_exists("password", $options)
+        ) {
+            throw new EntityNotFoundException('All fields are required.');
+        }  
+        
+        $user = $this->userRepository->findOneByUsername($options["username"]);
+        
+        if ($user) {
+            throw new EntityNotFoundException('User with username '.$options["username"].' already exists!');
+        }        
+         
+        $user = new User();        
+        $user->setRole(Role::get($options["role"]));
+        $user->setName($options["name"]);
+        $user->setUsername($options["username"]);
         $user->setPassword($this->passwordEncoder->encodePassword(
             $user,
-            $password
+            $options["password"]
         ));
         $this->userRepository->save($user);
-
-        return $user;
     }
 
     /**
@@ -78,24 +95,34 @@ final class UserService
      * @return User
      * @throws EntityNotFoundException
      */
-    public function updateUser(string $username, string $name, string $password, string $role): Article
+    public function updateUser($options)
     {
-        $user = $this->userRepository->findByUsername($username);
-        if (!$username) {
-            throw new EntityNotFoundException('User with username '.$username.' does not exist!');
+
+        $user = $this->userRepository->findOneByUsername($options["username"]);
+        if (!$options["username"]) {
+            throw new EntityNotFoundException('User with username '.$options["username"].' does not exist!');
         }
+        
+        if(array_key_exists("role", $options)) {
+           $user->setRole(Role::get($options["role"]));            
+        }
+        
+        if(array_key_exists("name", $options)) {
+           $user->setName($options["name"]);            
+        }
+        
+        if(array_key_exists("username", $options)) {
+            $user->setUsername($options["username"]);
+        }
+        
+        if(array_key_exists("password", $options)) {
+            $user->setPassword($this->passwordEncoder->encodePassword(
+                $user,
+                $options["password"]
+            ));
+        }       
 
-        $user = new User();
-        $user->setRole(Role::get($role));
-        $user->setName($name);
-        $user->setUsername($username);
-        $user->setPassword($this->passwordEncoder->encodePassword(
-            $user,
-            $password
-        ));
-        $this->userRepository->save($user);
-
-        return $user;
+        return $this->userRepository->save($user);
     }
 
     /**

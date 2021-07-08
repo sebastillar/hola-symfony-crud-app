@@ -3,9 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\User as User;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 
 /**
@@ -14,24 +13,14 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class UserRepository extends ServiceEntityRepository
 {   
+
     
-    /**
-     * UserRepository constructor.
-     * @param EntityManagerInterface $entityManager
-     */
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, User::class);        
-       
-    } 
     
-    /*
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, User::class);
     } 
-     * 
-     */   
+
 
     // /**
     //  * @return User[] Returns an array of User objects
@@ -66,9 +55,15 @@ class UserRepository extends ServiceEntityRepository
      * @param string $username
      * @return User
      */
-    public function findByUsername(string $username): ?User
+    public function findOneByUsername(string $username): ?User
     {
-        return $this->findOneBy(["username"=>$username]);
+        $user = $this->createQueryBuilder('u')
+            ->where('u.username = :val')
+            ->setParameter('val', $username)
+            ->getQuery()
+            ->getOneOrNullResult();
+    
+        return $user;
     }   
     
     /**
@@ -76,25 +71,31 @@ class UserRepository extends ServiceEntityRepository
      */
     public function findAll(): array
     {
-        return $this->findAll();
+        $users = $this->createQueryBuilder('u')
+            ->select("u")
+            ->from("App:User", "usu")
+            ->orderBy("usu.name", "ASC")
+            ->getQuery()
+            ->getResult();
+        return $users;
     }    
     
     /**
      * @param User $user
      */
-    public function save(User $user, EntityManagerInterface $manager): void
+    public function save(User $user): void
     {
-        $manager->persist($user);
-        $manager->flush();
+        $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->flush();
     } 
     
     /**
      * @param User $user
      */
-    public function delete(User $user, EntityManagerInterface $manager): void
+    public function delete(User $user): void
     {
-        $manager->remove($user);
-        $manager->flush();
+        $this->getEntityManager()->remove($user);
+        $this->getEntityManager()->flush();
     }    
 }
 
