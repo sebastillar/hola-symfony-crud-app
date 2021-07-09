@@ -44,7 +44,7 @@ This is a basic web app developed with Symfony 4.
 
 3. php bin/console doctrine:fixtures:load
 
-4. php ./phpunit
+4. php ./vendor/bin/phpunit
 
 ## Bugs
 - Since deployed with docker container, environment vars are ignored so, database connection doesn't work.

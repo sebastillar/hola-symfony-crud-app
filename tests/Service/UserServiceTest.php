@@ -24,6 +24,25 @@ class UserServiceTest extends KernelTestCase
         $this->assertSame("Name2", $user->getName());
     }
     
+    
+    
+    /**
+    * @expectedException \Exception
+    * @expectedExceptionMessageRegExp /^a < b\.$/
+    */
+    
+    /*
+    public function testGetUserByUsernameEmpty()
+    {
+        self::bootKernel();
+
+        $container = self::$container;
+        
+        $container->get(UserService::class)->getUser("");
+    }    
+     * */
+     
+    
     public function testUpdateUser()
     {
         self::bootKernel();
