@@ -46,16 +46,18 @@ class UserServiceTest extends KernelTestCase
 
         $container = self::$container;
         
-        $container->get(UserService::class)->addUser([
-            "name" => "NewUser",
-            "username" => "MyNewUser1",
-            "role" => "PAGE_1",
+        $username = "user".rand();
+        $name = "Name".rand();   
+        $page = rand(1,2);
+        
+        $result = $container->get(UserService::class)->addUser([
+            "name" => $name,
+            "username" => $username,
+            "role" => "PAGE_".$page,
             "password" => "1234",
         ]);
-
-        $user = $container->get(UserService::class)->getUser("MyNewUser1");
         
-        $this->assertEquals("NewUser", $user->getName());
+        $this->assertEquals($username, $result);
     }
 
     public function testDeleteUser()
@@ -64,10 +66,10 @@ class UserServiceTest extends KernelTestCase
 
         $container = self::$container;
         
-        $container->get(UserService::class)->deleteUser("MyNewUser1");
-
-        $user = $container->get(UserService::class)->getUser("MyNewUser1");
+        $username = "user19";
         
-        $this->assertEquals(null, $user);
+        $result = $container->get(UserService::class)->deleteUser($username);
+        
+        $this->assertEquals($username, $result);
     }    
 }

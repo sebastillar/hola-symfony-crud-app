@@ -8,25 +8,19 @@ use App\Entity\Role;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use App\Service\UserService;
-use App\Repository\UserRepository;
 
 class PageController extends AbstractController
 {
     private $exception;
     private $handler;
-    private $service;
     
     public function __construct(
         AccessDeniedException $accessDeniedException,
-        AccessDeniedHandler $handler,
-        UserRepository $repo
+        AccessDeniedHandler $handler
     )
     {
         $this->exception = $accessDeniedException;
         $this->handler = $handler;
-        $this->service = new UserService($repo);
     }
     
     public function index(Request $request, $num_page): Response

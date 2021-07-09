@@ -83,19 +83,25 @@ class UserRepository extends ServiceEntityRepository
     /**
      * @param User $user
      */
-    public function save(User $user): void
+    public function save(User $user): string
     {
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
+        return $user->getUsername();
     } 
     
     /**
      * @param User $user
      */
-    public function delete(User $user): void
+    public function delete(User $user): string
     {
+        if (!$user) {
+            throw $this->createNotFoundException('No user found');
+        }
         $this->getEntityManager()->remove($user);
         $this->getEntityManager()->flush();
+        
+        return $user->getUsername();
     }    
 }
 

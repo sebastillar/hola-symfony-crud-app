@@ -59,7 +59,7 @@ class UserService
      * @param string $role 
      * @return User
      */
-    public function addUser($options)
+    public function addUser($options) : string
     {
         if (
             !array_key_exists("role", $options) ||
@@ -84,7 +84,7 @@ class UserService
             $user,
             $options["password"]
         ));
-        $this->userRepository->save($user);
+        return $this->userRepository->save($user);
     }
 
     /**
@@ -129,14 +129,14 @@ class UserService
      * @param string $username
      * @throws EntityNotFoundException
      */
-    public function deleteUser(string $username): void
+    public function deleteUser(string $username): string
     {
-        $user = $this->userRepository->findByUsername($username);
+        $user = $this->userRepository->findOneByUsername($username);
         if (!$user) {
             throw new EntityNotFoundException('User with name '.$username.' does not exist!');
         }
 
-        $this->userRepository->delete($user);
+        return $this->userRepository->delete($user);
     }
 
 }
